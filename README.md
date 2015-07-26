@@ -24,15 +24,15 @@ For each file in the folder to be scanned,
 
 **Script Return Categories:**
 
-+ VIRUS FOUND!! - Fairly obvious. Metascan knows that this file is infected with a virus. Infected file's filename is appended with "__INFECTED"
-+ SUSPICIOUS FILE!! - Metascan knows that this file is suspicious. Suspicious file's filename is appended with "__SUSPICIOUS"
-+ All OK - no virus found - Metascan knows that this file is OK. All good
-+ File(s) not known to Metascan - Metascan has not seen this file before
-+ Problem Scanning!! - Something went wrong
++ _VIRUS FOUND!!_ - Fairly obvious. Metascan knows that this file is infected with a virus. Infected file's filename is appended with "__INFECTED"
++ _SUSPICIOUS FILE!!_ - Metascan knows that this file is suspicious. Suspicious file's filename is appended with "__SUSPICIOUS"
++ _All OK - no virus found_ - Metascan knows that this file is OK. All good
++ _File(s) not known to Metascan_ - Metascan has not seen this file before
++ _Problem Scanning!!_ - Something went wrong
 
-See Metascan's [API definitions] for furthyer information.
+See Metascan's [API definitions] for further information.
 
-### How to Use the Script
+### Setting up the Script
 1.  Each API call requires a Metascan Online API key. To obtain your free Metascan Online API key, follow the instructions at Metascan's [Public API] page
 2.  Enter your API key into your downloaded copy of the script betweeen the quotes into the variable ```myapikey```
 3.  Review the ```extlist``` variable.  Add or remove any file extensions to be scanned as required.  Files with extensions matching those in this list will be uploaded to Metascan for analysis
