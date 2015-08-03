@@ -4,7 +4,7 @@ __author__ = "Chris Hall"
 __copyright__ = "Copyright 2015, Chris Hall"
 __credits__ = ["Sander - http://forums.sabnzbd.org/viewtopic.php?t=13268"]
 __license__ = "GPL"
-__version__ = "1.0"
+__version__ = "1.1"
 __maintainer__ = "Chris Hall"
 __email__ = "twitter.com/chall32"
 __status__ = "Production"
@@ -13,12 +13,12 @@ __status__ = "Production"
 #
 This script will use https://www.metascan-online.com to scan a directory of files.
 It does this by calcuating an MD5 hash (https://en.wikipedia.org/wiki/MD5) and searching for the MD5 hash using
-Metascan's public API. 
+Metascan's public API.
 
 If the file is not found on Metascan's site, is deemed to have a suspect extension (see extlist below) and is smaller
 than the maximum file size for uploading to Metascan (see maxfilesize below), the script will upload a copy of the file
 for scanning via Metascan's public API.  It will then recheck Metascan for the results of the scan using the file's MD5
-hash. 
+hash.
 
 The script is intially meant to be used as SABnzbd postprocessing script.
 #
@@ -51,26 +51,27 @@ virusfound = 0
 problemhlp = 0
 #
 #### VARIABLES ###########################################################################################################
-#                                                                  
+#
 extlist = ['.exe','.com','.vbs','.vbe','.js','.jse','.jar','.wsf', # Extensions of suspect files that should be uploaded
-           '.wsh','.msc','msi','.pif','.scr','.hta','.apk','.jpg', # to Metascan (extensions should be dot lowercase)
-           '.jpeg']                                                #  
+           '.wsh','.msc','.msi','.pif','.scr','.hta','.apk','.jpg',# to Metascan (extensions should be dot lowercase)
+           '.jpeg']                                                #
 maxfilesize = '10000000' 					   # Maximum file size to be uploaded to Metascan (bytes)
-myapikey = ''			                                   # Metascan API key
+myapikey = ''                                                      # Metascan API key
 hashlookupurl = 'https://hashlookup.metascan-online.com/v2/hash/'  # Metascan API hash lookup URL
-hashresulturl = 'https://www.metascan-online.com/scanresult/hash/' # Metascan API hash result URL
+hashresulturl = 'https://metascan-online.com/en/scanresult/file/'  # Metascan API hash/file result URL
 fileuploadurl = 'https://scan.metascan-online.com/v2/file'         # Metascan API file scan upload URL
+manualhashurl = 'https://www.metascan-online.com/scanresult/hash/' # Metascan manual hash lookup URL
 secondsforscan = '30'                                              # Time to wait for scan of uploaded file (seconds)
 #
 ##########################################################################################################################
 # Function to calculate md5 hash of a file
 def md5_of_file(fullfilename):
 	md5 = hashlib.md5()
-	with open(fullfilename,'rb') as f: 
-	    for chunk in iter(lambda: f.read(8192), b''): 
+	with open(fullfilename,'rb') as f:
+	    for chunk in iter(lambda: f.read(8192), b''):
 		 md5.update(chunk)
 	return md5.hexdigest().upper()
-#   
+#
 # Funtion to post md5 hash of a file to Metascan
 def metascan_hash(md5):
         md5url = hashlookupurl + md5
@@ -80,13 +81,16 @@ def metascan_hash(md5):
                 hashresults = urllib2.urlopen(requestToSeeIfScannedBefore).read().decode("utf-8")
         except:
                 print "Problem contacting Metascan.  Please check \n"
+                hashresults = ' '
         return hashresults
-#   
-# Funtion to read and log Metascan md5 hash lookup results 
+#
+# Funtion to read and log Metascan md5 hash lookup results
 def process_hash_lookup(hashlookup):
 	if '"scan_all_result_a":"Infected"' in hashlookup:
-		print "Virus found in " + file
-		print "See URL: " + hashresulturl + md5 + "\n"
+                print "Virus found in " + file
+                hash_response = json.loads(hashresults)
+                data_id = hash_response['data_id']
+		print "See URL: " + hashresulturl + data_id + "\n"
 		newfilename = fullfilename + '__INFECTED'
 		os.rename(fullfilename, newfilename)
 		global virusfound
@@ -94,21 +98,25 @@ def process_hash_lookup(hashlookup):
 		uploadfile = False
 	elif '"scan_all_result_a":"Suspicious"' in hashlookup:
 		print "Suspicious file " + file
-		print "See URL: " + hashresulturl + md5 + "\n"
+		hash_response = json.loads(hashresults)
+                data_id = hash_response['data_id']
+		print "See URL: " + hashresulturl + data_id + "\n"
 		newfilename = fullfilename + '__SUSPICIOUS'
 		os.rename(fullfilename, newfilename)
 		global susipfound
 		susipfound += 100
 		uploadfile = False
 	elif '"scan_all_result_a":"Clean"' in hashlookup:
-		print "No Virus found in" + file
-	 	print "See URL: " + hashresulturl + md5 + "\n"
+		print "No Virus found in " + file
+                hash_response = json.loads(hashresults)
+                data_id = hash_response['data_id']
+	 	print "See URL: " + hashresulturl + data_id + "\n"
                 global cleanfound
                 cleanfound += 10
 	 	uploadfile = False
 	elif '"Not Found"' in hashlookup:
-		print "File not seen before" + file
-	 	print "See URL: " + hashresulturl + md5 + "\n"
+		print "File not seen before " + file
+		print "See URL: " + manualhashurl + md5 + "\n"
 	 	global unkwnfound
 	 	unkwnfound += 1
 	 	uploadfile = False
@@ -118,7 +126,6 @@ def process_hash_lookup(hashlookup):
                                 uploadfile = True
         else:
                 print "**** Problem Scanning!! **** \n"
-                print hashresults + "\n"
                 global problemhlp
                 problemhlp += 10000
                 uploadfile = False
@@ -127,7 +134,6 @@ def process_hash_lookup(hashlookup):
 # Funtion to upload file to Metascan if file extension appears in suspect list (extlist)
 def metascan_file(fullfilename):
         print "File is on risky file list.  Uploading copy to Metascan for definitive analysis \n"
-        # Upload file
         contents = open(fullfilename).read()
         request = urllib2.Request(fileuploadurl, contents)
         request.add_header('apikey', myapikey)

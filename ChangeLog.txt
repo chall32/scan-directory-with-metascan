@@ -1,3 +1,10 @@
+Release v1.1 - 03 Aug 2015
+--------------------------
+[NEW] Use Metascan data ID in URL if file known to Metascan
+[Fix] .msi file lookup
+[Fix] Crash when Metscan unavailable
+
+
 Release v1.0 - 26 Jul 2015
 --------------------------
 * Initial Release
