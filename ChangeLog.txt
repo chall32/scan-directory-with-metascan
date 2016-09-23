@@ -1,3 +1,8 @@
+Release v2.0 - 23 Sept 2016
+---------------------------
+[Fix] Use new Metadefender URLs
+
+
 Release v1.1 - 03 Aug 2015
 --------------------------
 [NEW] Use Metascan data ID in URL if file known to Metascan
