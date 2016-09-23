@@ -47,8 +47,7 @@ For example:
 
 For those running under Linux, dont forget to ```chmod +x scan-directory-with-metascan.py``` to mark the file as an executable first.
 ### More about Metadefender
-[![Metascan Video](http://img.youtube.com/vi/rNqwlpuraaI/0.jpg)](http://www.youtube.com/watch?v=rNqwlpuraaI)
-(Click to watch video on YouTube)
+See the [Opswat] about Metadefender
 
 ### What's New?
 ***See the [changelog] for what's new in the most recent release.***
@@ -59,9 +58,9 @@ If scan-directory-with-metascan helped you, how about buying me a beer? Use the 
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KT462HRW7XQ3J)
 
-
+[Opswat] https://www.opswat.com/metadefender-core
 [polarclouds.co.uk]: https://polarclouds.co.uk
-[www.metascan-online.com]: https://www.metadefender.com
+[www.metadefender.com]: https://www.metadefender.com
 [Public API]: https://www.metadefender.com/public-api#!/about
 [API definitions]: https://www.metadefender.com/public-api#!/definitions
 [SABnzbd postprocessing script]: http://wiki.sabnzbd.org/user-scripts
