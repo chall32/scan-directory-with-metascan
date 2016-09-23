@@ -58,7 +58,7 @@ If scan-directory-with-metascan helped you, how about buying me a beer? Use the 
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KT462HRW7XQ3J)
 
-[Opswat] https://www.opswat.com/metadefender-core
+[Opswat]: https://www.opswat.com/metadefender-core
 [polarclouds.co.uk]: https://polarclouds.co.uk
 [www.metadefender.com]: https://www.metadefender.com
 [Public API]: https://www.metadefender.com/public-api#!/about
